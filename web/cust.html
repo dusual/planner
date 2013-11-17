@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Number Display Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/dc.css"/>
+</head>
+<body>
+
+<div id="chart-hist-spend"></div>
+<div id="chart-row-spenders"></div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/dc.js"></script>
+
+<script type="text/javascript">
+
+$.ajax({
+  type: "GET",
+  url: "http://127.0.0.1:8080/visualize",
+  success : visualize,
+  error : function (){alert("Some Error")}
+});
+
+
+function visualize(data){
+
+
+
+var salaries_chart  = dc.barChart("#chart-salary"),
+    spendings_chart = dc.rowChart("#chart-spending");
+
+<!-- // use static or load via d3.csv("spendData.csv", function(error, spendData) {/* do stuff */}); -->
+<!-- // normalize/parse data -->
+<!-- spendData.forEach(function(d) { -->
+<!--     d.Spent = d.Spent.match(/\d+/); -->
+<!-- }); -->
+
+// set crossfilter
+var ndx = crossfilter(data)
+console.log(data);
+
+
+yearDim  = ndx.dimension(function(d) {return +d.Year;}), 
+salaryDim = ndx.dimension(function(d) {return +d.Salary;}), 
+//foodDim  = ndx.dimension(function(d) {return +d.food;}),
+//educationDim = ndx.dimension (function (d){ return +d.education;}),
+//rentDim = ndx.dimension (function(d) {return +d.rent;}),
+spendPerYear = yearDim.group().reduceSum(function(d) {return +d.Salary;}),
+//spendPerName = nameDim.group().reduceSum(function(d) {return +d.Spent;}),
+
+
+
+<!-- yearRingChart -->
+<!--     .width(200).height(200) -->
+<!--     .dimension(yearDim) -->
+<!--     .group(spendPerYear) -->
+<!--     .innerRadius(50); -->
+
+salaries_chart
+    .width(300).height(200)
+    .dimension(yearDim)
+    .group(spendPerYear)
+    .x(d3.scale.linear().domain([0,10]))
+    .elasticY(true);
+
+<!-- spendHistChart.xAxis().tickFormat(function(d) {return d*10}); // convert back to base unit -->
+<!-- spendHistChart.yAxis().ticks(2); -->
+
+<!-- spenderRowChart -->
+<!--     .width(350).height(200) -->
+<!--     .dimension(nameDim) -->
+<!--     .group(spendPerName) -->
+<!--     .elasticX(true); -->
+
+dc.renderAll();
+}
+</script>
+
+</body>
+</html>
