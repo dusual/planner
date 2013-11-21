@@ -67,7 +67,7 @@ def visualize():
 
 @route('/<filepath:path>')
 def server_static(filepath):
-        return static_file(filepath, root='/home/amit/dc.js/web')
+        return static_file(filepath, root='./')
 
 
 run(host='localhost', port=8080)

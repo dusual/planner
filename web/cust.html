@@ -7,8 +7,8 @@
 </head>
 <body>
 
-<div id="chart-hist-spend"></div>
-<div id="chart-row-spenders"></div>
+<div id="chart-salary"></div>
+<div id="chart-spending"></div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
 <script type="text/javascript" src="../js/d3.js"></script>
@@ -39,9 +39,9 @@ var salaries_chart  = dc.barChart("#chart-salary"),
 <!-- }); -->
 
 // set crossfilter
+data = $.parseJSON(data)
 var ndx = crossfilter(data)
 console.log(data);
-
 
 yearDim  = ndx.dimension(function(d) {return +d.Year;}), 
 salaryDim = ndx.dimension(function(d) {return +d.Salary;}), 
@@ -60,10 +60,10 @@ spendPerYear = yearDim.group().reduceSum(function(d) {return +d.Salary;}),
 <!--     .innerRadius(50); -->
 
 salaries_chart
-    .width(300).height(200)
+    .width(1200).height(800)
     .dimension(yearDim)
     .group(spendPerYear)
-    .x(d3.scale.linear().domain([0,10]))
+    .x(d3.scale.linear().domain([2013,2036]))
     .elasticY(true);
 
 <!-- spendHistChart.xAxis().tickFormat(function(d) {return d*10}); // convert back to base unit -->
